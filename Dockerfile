@@ -1,14 +1,14 @@
 ### FRONT BUILD START ###
-FROM --platform=$BUILDPLATFORM node:16-alpine as front
+FROM --platform=$BUILDPLATFORM node:22-alpine as front
 COPY ./web /app
 WORKDIR /app
 # Build front once upon multiarch build
-RUN yarn install && yarn run build
+RUN yarn install && NODE_OPTIONS=--openssl-legacy-provider yarn run build
 ### FRONT BUILD END ###
 
 
 ### BUILD TORRSERVER MULTIARCH START ###
-FROM --platform=$BUILDPLATFORM golang:1.21.2-alpine as builder
+FROM --platform=$BUILDPLATFORM golang:1.22.3-alpine as builder
 
 COPY . /opt/src
 COPY --from=front /app/build /opt/src/web/build
